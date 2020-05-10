@@ -16,7 +16,7 @@ public class Display {
     }
     public final void display() {
         open();
-        print();                    
+        print();
         close();
     }
 }
