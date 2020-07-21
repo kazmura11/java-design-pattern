@@ -8,20 +8,18 @@ import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class SafeFrame extends Frame implements ActionListener, Context {
+public class SafeFrame extends Frame implements Context {
     private TextField textClock = new TextField(60);        // 現在時刻表示
     private TextArea textScreen = new TextArea(10, 60);     // 警備センター出力
-    private Button buttonUse = new Button("金庫使用");      // 金庫使用ボタン
-    private Button buttonAlarm = new Button("非常ベル");    // 非常ベルボタン
-    private Button buttonPhone = new Button("通常通話");    // 通常通話ボタン
-    private Button buttonExit = new Button("終了");         // 終了ボタン
+    private Button buttonUse = new Button("Use Safe");      // 金庫使用ボタン
+    private Button buttonAlarm = new Button("Use Alerm");    // 非常ベルボタン
+    private Button buttonPhone = new Button("Phone");    // 通常通話ボタン
+    private Button buttonExit = new Button("Exit");         // 終了ボタン
 
     private State state = DayState.getInstance();           // 現在の状態
 
     // コンストラクタ
-    @SuppressWarnings("deprecation")
 	public SafeFrame(String title) {
         super(title);
         setBackground(Color.lightGray);
@@ -42,31 +40,18 @@ public class SafeFrame extends Frame implements ActionListener, Context {
         add(panel, BorderLayout.SOUTH);
         // 表示
         pack();
-        show();
+        setVisible(true);
         // リスナーの設定
-        buttonUse.addActionListener(this);
-        buttonAlarm.addActionListener(this);
-        buttonPhone.addActionListener(this);
-        buttonExit.addActionListener(this);
+        buttonUse.addActionListener((ActionEvent e) -> state.doUse(this));
+        buttonAlarm.addActionListener((ActionEvent e) -> state.doAlarm(this));
+        buttonPhone.addActionListener((ActionEvent e) -> state.doPhone(this));
+        buttonExit.addActionListener((ActionEvent e) -> System.exit(0));
     }
-    // ボタンが押されたらここに来る
-    public void actionPerformed(ActionEvent e) {
-        System.out.println(e.toString());
-        if (e.getSource() == buttonUse) {           // 金庫使用ボタン
-            state.doUse(this);
-        } else if (e.getSource() == buttonAlarm) {  // 非常ベルボタン
-            state.doAlarm(this);
-        } else if (e.getSource() == buttonPhone) {  // 通常通話ボタン
-            state.doPhone(this);
-        } else if (e.getSource() == buttonExit) {   // 終了ボタン
-            System.exit(0);
-        } else {
-            System.out.println("?");
-        }
-    }
+	
     // 時刻の設定
+    @Override
     public void setClock(int hour) {
-        String clockstring = "現在時刻は";
+        String clockstring = "CurrentTime";
         if (hour < 10) {
             clockstring += "0" + hour + ":00";
         } else {
@@ -77,15 +62,18 @@ public class SafeFrame extends Frame implements ActionListener, Context {
         state.doClock(this, hour);
     }
     // 状態変化
+    @Override
     public void changeState(State state) {
-        System.out.println(this.state + "から" + state + "へ状態が変化しました。");
+        System.out.println("State changed from " + this.state + " to " + state + ".");
         this.state = state;
     }
     // 警備センター警備員呼び出し
+    @Override
     public void callSecurityCenter(String msg) {
         textScreen.append("call! " + msg + "\n");
     }
     // 警備センター記録
+    @Override
     public void recordLog(String msg) {
         textScreen.append("record ... " + msg + "\n");
     }

@@ -9,12 +9,15 @@ public class Printer implements Printable {
         this.name = name;
         heavyJob("Printerのインスタンス(" + name + ")を生成中");
     }
+    @Override
     public void setPrinterName(String name) {       // 名前の設定
         this.name = name;
     }
+    @Override
     public String getPrinterName() {                // 名前の取得
         return name;
     }
+    @Override
     public void print(String string) {              // 名前付きで表示
         System.out.println("=== " + name + " ===");
         System.out.println(string);
