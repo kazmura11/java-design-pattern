@@ -12,16 +12,20 @@ public class DayState implements State {
             context.changeState(NightState.getInstance());
         }
     }
+    @Override
     public void doUse(Context context) {                // 金庫使用
         context.recordLog("金庫使用(昼間)");
     }
+    @Override
     public void doAlarm(Context context) {              // 非常ベル
         context.callSecurityCenter("非常ベル(昼間)");
         context.changeState(UrgentState.getInstance()); 
     }
+    @Override
     public void doPhone(Context context) {              // 通常通話
         context.callSecurityCenter("通常の通話(昼間)");
     }
+    @Override
     public String toString() {                          // 文字列表現
         return "[昼間]";
     }
